@@ -1,6 +1,6 @@
 @Stories.Api_HostAddress = http://localhost:5044
 
-GET {{Stories.Api_HostAddress}}/weatherforecast/
+GET {{Stories.Api_HostAddress}}/stories/best/1
 Accept: application/json
 
 ###

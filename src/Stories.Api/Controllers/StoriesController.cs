@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Stories.Application.Dto;
 using Stories.Application.Services;
@@ -6,20 +7,20 @@ namespace Stories.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class StoryController : ControllerBase
+public class StoriesController : ControllerBase
 {
     private readonly IBestStoriesService _storiesService;
 
-    public StoryController(IBestStoriesService storiesService)
+    public StoriesController(IBestStoriesService storiesService)
     {
         _storiesService = storiesService;
     }
 
-    [HttpGet("best/{limit}")]
+    [HttpGet("best")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status502BadGateway)]
-    public async Task<ActionResult<IList<Story>>> GetBestStories(int limit, CancellationToken cancellationToken)
+    public async Task<ActionResult<IList<Story>>> GetBestStories([Required][FromQuery]int limit, CancellationToken cancellationToken)
     {
         var result = await _storiesService.GetBestStoriesAsync(limit, cancellationToken);
         return result.Status switch

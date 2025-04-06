@@ -1,5 +1,4 @@
 using Stories.Api;
-using Stories.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +17,6 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-
-//app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();

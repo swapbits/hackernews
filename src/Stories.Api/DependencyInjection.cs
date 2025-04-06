@@ -10,7 +10,7 @@ public static class DependencyInjection
     public static WebApplicationBuilder ConfigureApplication(this WebApplicationBuilder builder)
     {
         var services = builder.Services;
-        if (true)
+        if (builder.Configuration.GetValue<bool>("HackerNews:UseCache"))
         {
             services.AddScoped<IBestStoriesService, BestStoriesCachingService>();
             services.AddMemoryCache();

@@ -31,6 +31,20 @@ public class TestHackerNewsClient
         _output.WriteLine(JsonSerializer.Serialize(r));
     }
     
+    [Fact]
+    public async Task HackerNewsClient2()
+    {
+        var httpClient = new HttpClient()
+        {
+            BaseAddress = new Uri("https://hacker-news.firebaseio.com/v0/")
+        };
+        var client = new HackerNewsClient2(httpClient);
+        var r = await client.GetBestStoriesIds(CancellationToken.None);
+        Assert.NotNull(r);
+        
+        _output.WriteLine(JsonSerializer.Serialize(r));
+    }
+    
 }
 
 public class TestBestStoriesService

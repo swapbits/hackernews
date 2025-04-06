@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Stories.Application.Clients;
 using Stories.Application.Dto;
 using Stories.Application.Mappers;
@@ -8,28 +9,45 @@ public sealed class BestStoriesCachingService : IBestStoriesService
 {
     private const int SIMULTANEOUS_BEST_STORIES_REQUESTS = 3;
     private const int SIMULTANEOUS_STORY_REQUESTS = 3;
-    
-    private static readonly SemaphoreSlim BestStoriesSemaphore = new SemaphoreSlim(SIMULTANEOUS_BEST_STORIES_REQUESTS, SIMULTANEOUS_BEST_STORIES_REQUESTS);
-    
-    private readonly IHackerNewsClient _hackerNewsClient;
-    private readonly ICache _cache;
-
     private const int BEST_STORIES_ID_KEY = -1;
     
-    public BestStoriesCachingService(IHackerNewsClient hackerNewsClient, ICache cache)
+    private static readonly SemaphoreSlim BestStoriesSemaphore = new SemaphoreSlim(SIMULTANEOUS_BEST_STORIES_REQUESTS, SIMULTANEOUS_BEST_STORIES_REQUESTS);
+
+    private readonly ILogger<BestStoriesCachingService> _logger;
+    private readonly IHackerNewsClient _hackerNewsClient;
+    private readonly ICache _cache;
+    
+    public BestStoriesCachingService(
+        ILogger<BestStoriesCachingService> logger,
+        IHackerNewsClient hackerNewsClient,
+        ICache cache)
     {
+        _logger = logger;
         _hackerNewsClient = hackerNewsClient;
         _cache = cache;
     }
 
     public async Task<BestStoriesResult> GetBestStoriesAsync(int limit, CancellationToken cancellationToken)
     {
-        var bestStoriesIds = await GetBestStoriesIds(cancellationToken);
+        if (limit <= 0)
+        {
+            return BestStoriesResult.InvalidArgument;
+        }
 
-        var limitedStoresIds = bestStoriesIds.Take(limit).ToArray(); 
-        var stories = await GetStories(limitedStoresIds, cancellationToken);
-        var bestStories = stories.Select(StoryMapper.Map).ToList();
-        return new BestStoriesResult(bestStories);
+        try
+        {
+            var bestStoriesIds = await GetBestStoriesIds(cancellationToken);
+
+            var limitedStoresIds = bestStoriesIds.Take(limit).ToArray(); 
+            var stories = await GetStories(limitedStoresIds, cancellationToken);
+            var bestStories = stories.Select(StoryMapper.Map).ToList();
+            return new BestStoriesResult(bestStories);
+        }
+        catch(Exception e)
+        {
+            _logger.LogError(e, "An exception occured getting stories, limit: {Limit} ", limit);
+            return BestStoriesResult.HackerNewsServiceError;
+        }
     }
     
     private async Task<int[]> GetBestStoriesIds(CancellationToken cancellationToken)

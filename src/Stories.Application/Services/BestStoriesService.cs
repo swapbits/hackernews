@@ -41,7 +41,7 @@ public sealed class BestStoriesService : IBestStoriesService
             return BestStoriesResult.HackerNewsServiceError;
         }
         
-        // we assume that best stories are sorted,
+        // we assume that best stories are sorted
         var bestStories = stories
             .Select(StoryMapper.Map)
             .ToList();

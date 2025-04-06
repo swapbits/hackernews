@@ -8,7 +8,11 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Stories.Api/Stories.Api.csproj", "Stories.Api/"]
+COPY ["Stories.Application/Stories.Application.csproj", "Stories.Application/"]
+COPY ["Stories.Infrastructure/Stories.Infrastructure.csproj", "Stories.Infrastructure/"]
 RUN dotnet restore "Stories.Api/Stories.Api.csproj"
+RUN dotnet restore "Stories.Application/Stories.Application.csproj"
+RUN dotnet restore "Stories.Infrastructure/Stories.Infrastructure.csproj"
 COPY . .
 WORKDIR "/src/Stories.Api"
 RUN dotnet build "Stories.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build

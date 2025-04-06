@@ -1,0 +1,2 @@
+[*.cs]
+resharper_csharp_brace_style = next_line

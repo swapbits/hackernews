@@ -116,7 +116,7 @@ public class TestBestStoriesService
         var hackerNewsClient = new Mock<IHackerNewsClient>();
         hackerNewsClient
             .Setup(client => client.GetBestStoriesIds(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => [3, 1, 2]);
+            .ReturnsAsync(() => [3, 2, 1]);
         
         var now = DateTime.UtcNow;
         HackerNewsStoryDto[] storiesDto = [
@@ -219,7 +219,7 @@ public class TestBestStoriesService
         var hackerNewsClient = new Mock<IHackerNewsClient>();
         hackerNewsClient
             .Setup(client => client.GetBestStoriesIds(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => [3, 1, 2]);
+            .ReturnsAsync(() => [3, 2, 1]);
         
         var now = DateTime.UtcNow;
         HackerNewsStoryDto[] storiesDto = [
@@ -291,6 +291,6 @@ public class TestBestStoriesService
         ];
         Assert.Equal(expected, result.Stories);
         hackerNewsClient.Verify(client => client.GetBestStoriesIds(It.IsAny<CancellationToken>()), Times.Once);
-        hackerNewsClient.Verify(client => client.GetStory(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        hackerNewsClient.Verify(client => client.GetStory(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

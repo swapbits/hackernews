@@ -33,7 +33,7 @@ public sealed class BestStoriesService : IBestStoriesService
         {
             var bestStoriesIds = await GetBestStoriesIds(cancellationToken);
 
-            stories = await GetStories(bestStoriesIds, cancellationToken);
+            stories = await GetStories(bestStoriesIds.Take(limit).ToArray(), cancellationToken);
         }
         catch (Exception e)
         {
@@ -41,11 +41,8 @@ public sealed class BestStoriesService : IBestStoriesService
             return BestStoriesResult.HackerNewsServiceError;
         }
         
-        // we assume that best stories are not sorted,
-        // that's why we load all stories, sort them by Score and only then take a required number of items 
+        // we assume that best stories are sorted,
         var bestStories = stories
-            .OrderByDescending(s => s.Score)
-            .Take(limit)
             .Select(StoryMapper.Map)
             .ToList();
 

@@ -1,0 +1,6 @@
+﻿services:
+  stories.api:
+    image: stories.api
+    build:
+      context: .
+      dockerfile: Stories.Api/Dockerfile

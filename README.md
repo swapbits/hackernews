@@ -26,11 +26,13 @@ The implementation can be selected in appsettings.json by the option HackerNews:
 
 * BestStoriesCachingService (cache)
 * BestStoriesService (no cache)
+* The service retries failed HTTP requests up to 3 times using a retry policy.
 * There are unit tests in Stories.Application.UnitTest/TestBestStoriesService
 * There is swagger http://localhost:5044/swagger/index.html (if you run the project in Development environment)
 
 ## Todo
-* Replace hardcoded limits with configuration values from appsettings.json using DI.
+* Replace hardcoded limits with configuration values from appsettings.json, injected via DI.
+* Replace hardcoded retry attempts with configuration values from appsettings.json, injected via DI.
 * Add logs.
 * Use non-blocking approach in GetStories methods.
 * Create an integration tests project. Move tests from TestHackerNewsClient to it. Add stress tests.

@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
+using Polly;
+using Polly.Extensions.Http;
 using Stories.Application.Clients;
 using Stories.Application.Services;
 using Stories.Infrastructure;
@@ -24,7 +26,8 @@ public static class DependencyInjection
         services.AddScoped<IHackerNewsClient, HackerNewsClient>();
         
         var baseUrl = GetRequiredBaseUrl();
-        services.AddHttpClient<IHackerNewsClient, HackerNewsClient>(client => client.BaseAddress = new Uri(baseUrl));
+        services.AddHttpClient<IHackerNewsClient, HackerNewsClient>(client => client.BaseAddress = new Uri(baseUrl))
+            .AddPolicyHandler(GetRetryPolicy());
         
         return builder;
         
@@ -39,4 +42,12 @@ public static class DependencyInjection
             return url;
         }
     }
+    
+    static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+    {
+        return HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+    }    
 }

@@ -4,6 +4,7 @@ Get best stories.
 
 ## Build
 cd src/
+
 docker build -f ./Dockerfile -t stories-api .
 
 ## Run

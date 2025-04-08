@@ -20,6 +20,7 @@ http://localhost:8080/stories/best?limit=20
 * The "limit" argument is required.
 * The "limit" argument must be greater than zero.
 * If "limit" exceeds the number of available stories, all existing stories are returned.
+* The service returns eventually consistent result.
 
 ## Implementation details and assumptions
 There are two implementations of the service BestStoriesService and BestStoriesCachingService without cache and with cache correspondingly.

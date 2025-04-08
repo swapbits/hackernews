@@ -41,8 +41,9 @@ public sealed class BestStoriesService : IBestStoriesService
             return BestStoriesResult.HackerNewsServiceError;
         }
         
-        // we assume that best stories are sorted
+        // we assume that best stories id are sorted but the result eventually consistent
         var bestStories = stories
+            .OrderByDescending(dto => dto.Score)
             .Select(StoryMapper.Map)
             .ToList();
 

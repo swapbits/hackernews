@@ -107,8 +107,10 @@ public class TestBestStoriesService
         hackerNewsClient.Verify(client => client.GetStory(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.AtLeast(1));
     }
     
-    [Fact]
-    public async Task When_ThereAreLessBestStoriesThanLimit_Expect_AllAvailableStoriesSortedByScoreDescending()
+    [Theory]
+    [InlineData(new int[] { 3, 1, 2})]
+    [InlineData(new int[] { 3, 2, 1})]
+    public async Task When_ThereAreLessBestStoriesThanLimit_Expect_AllAvailableStoriesSortedByScoreDescending(int[] ids)
     {
         // arrange
         var logger = new Mock<ILogger<BestStoriesService>>();
@@ -116,7 +118,7 @@ public class TestBestStoriesService
         var hackerNewsClient = new Mock<IHackerNewsClient>();
         hackerNewsClient
             .Setup(client => client.GetBestStoriesIds(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => [3, 2, 1]);
+            .ReturnsAsync(() => ids);
         
         var now = DateTime.UtcNow;
         HackerNewsStoryDto[] storiesDto = [

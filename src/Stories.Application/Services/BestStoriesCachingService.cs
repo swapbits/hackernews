@@ -40,7 +40,10 @@ public sealed class BestStoriesCachingService : IBestStoriesService
 
             var limitedStoresIds = bestStoriesIds.Take(limit).ToArray(); 
             var stories = await GetStories(limitedStoresIds, cancellationToken);
-            var bestStories = stories.Select(StoryMapper.Map).ToList();
+            var bestStories = stories
+                .OrderByDescending(dto => dto.Score)
+                .Select(StoryMapper.Map)
+                .ToList();
             return new BestStoriesResult(bestStories);
         }
         catch(Exception e)
